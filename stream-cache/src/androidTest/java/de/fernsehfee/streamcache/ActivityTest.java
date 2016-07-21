@@ -75,5 +75,11 @@ public class ActivityTest extends ActivityTestCase {
 			} catch (InterruptedException ignored) {
 			}
 		}
+
+		Log.v("TEST", "Has cache? "+cache.has("test.1", TimeUnit.SECONDS, 5));
+
+		cache.deleteKey("test.1");
+
+		assertFalse("We deleted a key - this should now not exist", cache.has("test.1", TimeUnit.SECONDS, 5));
 	}
 }

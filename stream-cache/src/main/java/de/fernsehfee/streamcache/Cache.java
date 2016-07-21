@@ -7,6 +7,9 @@ import android.support.annotation.WorkerThread;
 import android.util.Base64;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,7 +76,7 @@ public class Cache {
 	@Nullable
 	public InputStream put(@NonNull final String key, @NonNull final InputStream inputStream) {
 		File file = new File(getCacheFolder(), Utils.sha1(key));
-		Log.v("TEST", "Writing stream to '"+file.getAbsolutePath()+"'");
+		//Log.v("TEST", "Writing stream to '"+file.getAbsolutePath()+"'");
 		if(file.exists()) {
 			if(!file.delete()) {
 				throw new IllegalStateException("Could not delete a cache file. Likely an issue " +
@@ -87,28 +90,47 @@ public class Cache {
 			int read = 0;
 			byte[] buffer = new byte[8192];
 			while((read = inputStream.read(buffer)) != -1) {
-				Log.v("TEST", "Writing "+read+" bytes");
+				//Log.v("TEST", "Writing "+read+" bytes");
 				out.write(buffer, 0, read);
 			}
 		} catch (IOException ignored) {
 			ignored.printStackTrace();
 		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException ignored) {
-				}
-			}
+			IOUtils.closeQuietly(out);
+			IOUtils.closeQuietly(inputStream);
 		}
 
 		try {
-			Log.v("TEST", "Returning '"+file.getAbsolutePath()+"' to read");
+			//Log.v("TEST", "Returning '"+file.getAbsolutePath()+"' to read");
 			return new FileInputStream(file);
 		} catch (FileNotFoundException ignored) {
 			ignored.printStackTrace();
 		}
 
 		return null;
+	}
+
+	/**
+	 * Check whether a cache exists (and is valid)
+	 * @param key The name of the file (will be hashed) that points to the cache
+	 * @param unit The unit of time to use in conjunction with 'age'
+	 * @param age The number of time units
+	 * @return True if the cache exists and is within the age constraints
+	 */
+	public boolean has(@NonNull final String key, @NonNull TimeUnit unit, long age) {
+		File file = new File(getCacheFolder(), Utils.sha1(key));
+		if(file.exists()) {
+			long modified = file.lastModified();
+			long timeDiff = System.currentTimeMillis() - modified;
+			long ageMillis = TimeUnit.MILLISECONDS.convert(age, unit);
+
+			if(timeDiff <= ageMillis) {
+				// Cache is current
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -150,6 +172,32 @@ public class Cache {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Delete the cache item from the cache folder
+	 * @param key The name of the file (will be hashed) that points to the cache
+	 */
+	@SuppressWarnings("unused")
+	public boolean deleteKey(@NonNull String key) {
+		File file = new File(getCacheFolder(), Utils.sha1(key));
+		return FileUtils.deleteQuietly(file);
+	}
+
+	/**
+	 * Delete all items from the cache folder
+	 * @return The number of items deleted
+	 */
+	@SuppressWarnings("unused")
+	public int deleteAll() {
+		File[] files = getCacheFolder().listFiles();
+		int count = 0;
+		for(File file : files) {
+			if(FileUtils.deleteQuietly(file)) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	/**
