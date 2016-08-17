@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
-import android.util.Base64;
-import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -80,7 +78,7 @@ public class Cache {
 		if(file.exists()) {
 			if(!file.delete()) {
 				throw new IllegalStateException("Could not delete a cache file. Likely an issue " +
-						"with permissions.");
+						"with permissions: "+file);
 			}
 		}
 
@@ -214,7 +212,7 @@ public class Cache {
 		if (!mCacheFolder.exists()) {
 			if (!mCacheFolder.mkdirs()) {
 				throw new IllegalStateException("Could not create a location to cache. This leaves " +
-						"the caching library in a bad state.");
+						"the caching library in a bad state.: "+mCacheFolder);
 			}
 		}
 
