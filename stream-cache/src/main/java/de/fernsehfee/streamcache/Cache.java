@@ -206,6 +206,18 @@ public class Cache {
 	@NonNull
 	public File getCacheFolder() {
 		if (mCacheFolder == null || !mCacheFolder.exists()) {
+			File dir = null;
+
+			dir = mContext.get().getExternalCacheDir();
+			if(dir == null) {
+				dir = mContext.get().getCacheDir();
+			}
+
+			if(dir == null) {
+				throw new IllegalStateException("Could not create a location to cache. This leaves " +
+						"the caching library in a bad state.");
+			}
+
 			mCacheFolder = new File(mContext.get().getExternalCacheDir(), "stream-cache");
 		}
 
