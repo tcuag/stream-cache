@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/StreamCache.iml" filepath="$PROJECT_DIR$/StreamCache.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stream-cache/stream-cache.iml" filepath="$PROJECT_DIR$/stream-cache/stream-cache.iml" />
       <module fileurl="file://$PROJECT_DIR$/stream-cache.iml" filepath="$PROJECT_DIR$/stream-cache.iml" />
       <module fileurl="file://$PROJECT_DIR$/stream-cache/stream-cache-stream-cache.iml" filepath="$PROJECT_DIR$/stream-cache/stream-cache-stream-cache.iml" />
     </modules>
