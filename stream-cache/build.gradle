@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'de.fernsehfee'
     PUBLISH_ARTIFACT_ID = 'stream-cache'
-    PUBLISH_VERSION = '1.0.9'
+    PUBLISH_VERSION = '1.1.0'
 }
 
 android {
@@ -14,8 +14,8 @@ android {
 //        applicationId "de.fernsehfee.streamcache"
         minSdkVersion 10
         targetSdkVersion 23
-        versionCode 9
-        versionName "1.0.9"
+        versionCode 10
+        versionName "1.1.0"
     }
     buildTypes {
         release {

@@ -50,16 +50,18 @@ public class Cache {
 		if (mInstance == null) {
 			synchronized (Cache.class) {
 				if (mInstance == null) {
-					mInstance = new Cache(context);
+					mInstance = new Cache();
 				}
 			}
 		}
 
+		mInstance.mContext = new WeakReference<>(context);
+
 		return mInstance;
 	}
 
-	private Cache(Context context) {
-		mContext = new WeakReference<>(context);
+	private Cache() {
+
 	}
 
 	/**
