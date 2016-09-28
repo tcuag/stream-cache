@@ -220,7 +220,7 @@ public class Cache {
 						"the caching library in a bad state.");
 			}
 
-			mCacheFolder = new File(mContext.get().getExternalCacheDir(), "stream-cache");
+			mCacheFolder = new File(dir, "stream-cache");
 		}
 
 		if (!mCacheFolder.exists()) {
