@@ -1,5 +1,6 @@
 package de.fernsehfee.streamcache;
 
+import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import java.io.BufferedReader;
@@ -28,6 +29,25 @@ class Utils {
 
 		throw new IllegalStateException("This should not get reached by an Android device. Check " +
 				"that the device allows UTF-8 encoding.");
+	}
+
+	/* Checks if external storage is available for read and write */
+	public static boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
+	/* Checks if external storage is available to at least read */
+	public static boolean isExternalStorageReadable() {
+		String state = Environment.getExternalStorageState();
+		if (Environment.MEDIA_MOUNTED.equals(state) ||
+				Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+			return true;
+		}
+		return false;
 	}
 
 	@NonNull

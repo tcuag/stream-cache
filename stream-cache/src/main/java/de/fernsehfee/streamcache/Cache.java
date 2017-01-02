@@ -210,14 +210,16 @@ public class Cache {
 		if (mCacheFolder == null || !mCacheFolder.exists()) {
 			File dir = null;
 
-			dir = mContext.get().getExternalCacheDir();
-			if(dir == null) {
-				dir = mContext.get().getCacheDir();
+			try {
+				dir = mContext.get().getExternalCacheDir();
+			} catch (ArrayIndexOutOfBoundsException ignored) {
+				// Do nothing. At least one distribution of Android crashes on getExternalCacheDir() due to
+				// bugs in their own custom code. For this reason, just catch the exception and move on.
+				// The next block will check whether it worked or not and use the next directory to try.
 			}
 
-			if(dir == null) {
-				throw new IllegalStateException("Could not create a location to cache. This leaves " +
-						"the caching library in a bad state.");
+			if(dir == null || !Utils.isExternalStorageWritable()) {
+				dir = mContext.get().getCacheDir();
 			}
 
 			mCacheFolder = new File(dir, "stream-cache");
@@ -225,8 +227,16 @@ public class Cache {
 
 		if (!mCacheFolder.exists()) {
 			if (!mCacheFolder.mkdirs()) {
-				throw new IllegalStateException("Could not create a location to cache. This leaves " +
-						"the caching library in a bad state.: "+mCacheFolder);
+				// Problems writing to cache - test writing to file path.
+				File filePath = mContext.get().getExternalFilesDir(null);
+				File cachePath = new File(filePath, "stream-cache");
+
+				throw new IllegalStateException("Could not create a location to cache. " +
+						"This leaves the caching library in a bad state.: "+mCacheFolder+ ". " +
+						"filePath="+filePath+". " +
+						"cachePath="+cachePath+". " +
+						"cachePath-exists="+cachePath.exists()+". " +
+						"cachePath-mkdirs="+cachePath.mkdirs());
 			}
 		}
 
