@@ -3,8 +3,8 @@ apply plugin: 'com.android.library'
 ext {
     PUBLISH_GROUP_ID = 'de.fernsehfee'
     PUBLISH_ARTIFACT_ID = 'stream-cache'
-    PUBLISH_VERSION = '1.1.3'
-    VERSION_CODE = 13
+    PUBLISH_VERSION = '1.1.6'
+    VERSION_CODE = 16
 }
 
 android {
